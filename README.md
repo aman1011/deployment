@@ -14,7 +14,7 @@ albums. The albums can bed edited or deleted, and can be associated with a regis
 You can also:
   - Log in via public accounts such as facebook and google plus.
 
-### Installation
+### Installation - on local host.
 
 Web app requires setting up the database model.
 Helper script attached to pre-populate some data.
@@ -40,6 +40,41 @@ Verify the deployment by navigating to your server address in your preferred bro
 ```sh
 127.0.0.1:5000
 ```
+
+### Installation - on Linux Webserver
+
+Web app requires setting up the database model.
+Helper script attached to pre-populate some data.
+The webserver is configured for the Amazon Web Service LightSail Instance.
+The server name is http://ec2-52-91-31-136.compute-1.amazonaws.com/
+The alias (public IP Address for the webserver is http://52.91.31.136/.
+The server uses Apache2 and the web app is in python2.7.
+The port used is 2200.
+
+
+Run the following commands in the order and start the server.
+
+```sh
+$ python models.py
+$ python dbhelper.py
+```
+
+For starting server
+
+```sh
+$ python view.py
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
