@@ -67,7 +67,7 @@ class Album(Base):
 
 
 # Creating engine for the db file.
-engine = create_engine('sqlite:///musicbandswithalbums.db')
+engine = create_engine("postgresql://catalog:topsecret@localhost/catalogdb")
 Base.metadata.create_all(engine)
 
 

@@ -23,14 +23,15 @@ from flask import make_response
 import requests
 
 app = Flask(__name__)
+app.secret_key = 'super_secret_key'
 auth = HTTPBasicAuth()
 
 CLIENT_ID_GOOGLE = json.loads(open(
-	'client_secret.json', 'r').read())['web']['client_id']
+         '/var/www/itemcatalog/itemcatalog/client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Music Album Catalog App"
 
 # connect to database
-engine = create_engine('sqlite:///musicbandswithalbums.db')
+engine = create_engine("postgresql://catalog:topsecret@localhost/catalogdb")
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -44,7 +45,6 @@ redis = Redis()
 def showLogin():
     state = ''.join(random.choice(
         string.ascii_uppercase + string.digits) for x in xrange(32))
-    print state
     login_session['state'] = state
 
     return render_template('login.html', STATE=state)
@@ -53,8 +53,6 @@ def showLogin():
 # gconnect module
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    print "reached here"
-    print login_session
     # validating the state token.
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -67,7 +65,7 @@ def gconnect():
     try:
 
         # upgrading the code to a credential object
-        oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/itemcatalog/itemcatalog/client_secret.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -204,10 +202,10 @@ def fbconnect():
         return response
     access_token = request.data
 
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
+    app_id = json.loads(open('/var/www/itemcatalog/itemcatalog/fb_client_secrets.json', 'r').read())[
         'web']['app_id']
     app_secret = json.loads(
-        open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+        open('/var/www/itemcatalog/itemcatalog/fb_client_secrets.json', 'r').read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?'
     url += 'grant_type=fb_exchange_token&'
     url += 'client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
@@ -570,6 +568,5 @@ def musicBandJSON(music_band_name):
     return jsonify(Albums=[i.serialize for i in albums])
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
