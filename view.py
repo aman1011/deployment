@@ -506,7 +506,9 @@ def deleteAlbum(music_band_name, album_name):
 
         return redirect(url_for('homePage'))
     else:
-        return render_template('homePage')
+        return render_template('deleteAlbum.html',
+                               album=toDeleteAlbum,
+                               music_band_name=music_band_name)
 
 
 @auth.verify_password
