@@ -1,0 +1,44 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	
+	
+<div id="fh5co-services-section">
+	<div class="row">
+		<div class="col-md-4 animate-box">
+			<div class="services">
+				{% if 'username' in session %}
+					<h4><a href="{{url_for('addMusicBand')}}">Add Music Band</a></h4>
+					{% endif %}
+
+				<h3>Music Bands</h3>
+				<ul>
+				{% for band in music_bands %}
+					<li><a href="{{url_for('showBandAlbums', music_band_name = band.name)}}">{{ band.name }}</a></li>				
+				{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-4 animate-box">
+			<div class="services">
+				<div class="desc">
+					{% if 'username' in session %}
+					<h4><a href="{{url_for('addAlbum')}}">Add Album</a></h4>
+					{% endif %}
+					<h3>Albums</h3>
+					<ul>
+						{% for album in albums %}
+							{% for band in music_bands %}
+								{% if band.id == album.music_band_id %}
+									<li><span>{{ album.name }}</span><span style="font-style:italic;color:#666699"> ({{band.name}})</span></li>
+									{{ break }}
+								{% endif %}
+							{% endfor %}
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
